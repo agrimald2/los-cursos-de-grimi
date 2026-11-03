@@ -6,8 +6,9 @@ function docker(args,input){const r=spawnSync('docker',args,{input,encoding:'utf
 try{
   docker(['run','-d','--rm','--name',name,'--network','none','-e','POSTGRES_HOST_AUTH_METHOD=trust','postgres:17']);
   let ready=false;
-  for(let i=0;i<40;i++){
-    const r=spawnSync('docker',['exec',name,'pg_isready','-U','postgres'],{stdio:'ignore'});
+  // The image's initialization server accepts sockets before its final restart; only the final server accepts TCP.
+  for(let i=0;i<120;i++){
+    const r=spawnSync('docker',['exec',name,'pg_isready','-h','127.0.0.1','-U','postgres'],{stdio:'ignore'});
     if(r.status===0){ready=true;break}
     await new Promise(resolve=>setTimeout(resolve,250));
   }
@@ -16,9 +17,9 @@ try{
     create schema auth; create table auth.users(id uuid primary key,raw_user_meta_data jsonb default '{}');
     create function auth.uid() returns uuid language sql stable as $$select nullif(current_setting('request.jwt.claim.sub',true),'')::uuid$$;
     grant usage on schema public,auth to anon,authenticated,service_role;`;
-  docker(['exec','-i',name,'psql','-U','postgres','-v','ON_ERROR_STOP=1'],bootstrap);
+  docker(['exec','-i',name,'psql','-h','127.0.0.1','-U','postgres','-v','ON_ERROR_STOP=1'],bootstrap);
   for(const file of ['supabase/migrations/20261103000100_academy.sql','supabase/tests/security.sql']){
-    docker(['exec','-i',name,'psql','-U','postgres','-v','ON_ERROR_STOP=1'],readFileSync(file,'utf8'));
+    docker(['exec','-i',name,'psql','-h','127.0.0.1','-U','postgres','-v','ON_ERROR_STOP=1'],readFileSync(file,'utf8'));
   }
   console.log('Postgres RLS: privacy, paid access, drafts, moderation and privilege escalation checks passed.');
 }finally{
