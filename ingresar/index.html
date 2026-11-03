@@ -19,9 +19,24 @@
     <p id="message" role="status" aria-live="polite">Preparando tu acceso…</p>
     <div id="signed-out"><button class="button cyan" id="google" disabled>Continuar con Google <span aria-hidden="true">↗</span></button><p>Crear cuenta no activa una membresía ni realiza cobros.</p></div>
     <div id="signed-in" hidden><p id="identity"></p><p id="access"></p><button class="button" id="logout">Cerrar sesión</button></div>
-    <nav class="login-links" aria-label="Volver a la academia"><a href="../">Volver al inicio</a><a href="../alumnos/">Explorar demo del aula</a><a href="../privacidad.html">Privacidad</a><a href="../terminos.html">Condiciones de prueba</a></nav>
+    <section id="billing" class="membership" aria-labelledby="billing-title" hidden>
+      <span id="billing-mode" class="badge">TU MEMBRESÍA</span>
+      <h3 id="billing-title">Reservá tu próxima versión.</h3>
+      <p class="membership-price"><strong id="billing-price">S/50.00</strong> <span>/ mes</span></p>
+      <p id="billing-status">Revisando membresía…</p>
+      <p id="billing-notice">Preventa: primer curso el viernes 6 de noviembre de 2026.</p>
+      <div id="payment-consent" hidden><label class="payment-check"><input id="payment-terms" type="checkbox"><span>Acepto la preventa: S/50 hoy y renovación automática mensual. Primer curso el 6 de noviembre; devolución antes del inicio o si no se entrega en esa fecha. Revisé las <a href="../terminos.html" target="_blank" rel="noopener">condiciones</a> y la <a href="../privacidad.html" target="_blank" rel="noopener">privacidad</a>.</span></label></div>
+      <button id="subscribe" class="button cyan" disabled hidden>Continuar en Mercado Pago ↗</button>
+      <a id="resume-payment" class="button cyan" hidden>Retomar autorización en Mercado Pago ↗</a>
+      <button id="refresh-payment" class="button" hidden>Verificar estado del pago</button>
+      <button id="cancel-payment" class="button" hidden>Cancelar renovación</button>
+      <div id="cancel-confirmation" class="cancel-confirmation" hidden><p>¿Cancelar futuras renovaciones? Conservás el período ya pagado. Esto no solicita un reembolso.</p><button id="confirm-cancel" class="button">Sí, cancelar renovación</button><button id="keep-payment" class="button">Mantener suscripción</button></div>
+      <p id="billing-message" role="status" aria-live="polite"></p>
+    </section>
+    <nav class="login-links" aria-label="Volver a la academia"><a href="../">Volver al inicio</a><a href="../alumnos/">Explorar demo del aula</a><a href="../privacidad.html">Privacidad</a><a href="../terminos.html">Condiciones de preventa</a></nav>
   </section>
 </main>
+<style>.membership{border-top:1px solid #fff3;margin-top:24px;padding-top:24px}.membership h3{font-size:1.4rem;margin:16px 0}.membership-price strong{font-size:2.5rem;color:#70f6ec}.membership-price span{color:#e6cfea}.payment-check{display:flex;gap:12px;line-height:1.6;padding:16px 0;cursor:pointer}.payment-check input{width:24px;height:24px;flex-shrink:0;accent-color:#ff4bc5;margin-top:4px}.payment-check a{text-decoration:underline}.membership .button{min-height:48px;white-space:normal;text-align:center}.membership :focus-visible{outline:3px solid #70f6ec;outline-offset:4px}.cancel-confirmation{border:1px solid #ff4bc5;border-radius:16px;padding:16px}#billing-message{font-size:.9rem;color:#e6cfea;overflow-wrap:anywhere}.membership [hidden]{display:none!important}</style>
 <script type="module" src="app.js"></script>
 </body>
 </html>

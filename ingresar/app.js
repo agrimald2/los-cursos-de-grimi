@@ -1,4 +1,5 @@
 import {createClient} from '@supabase/supabase-js';
+import {showBilling} from './billing.js';
 const $=id=>document.getElementById(id);
 let client;
 let renderVersion=0;
@@ -10,6 +11,7 @@ async function render(session){
   const version=++renderVersion;
   $('signed-in').hidden=!session;
   $('signed-out').hidden=!!session;
+  void showBilling(client,session);
   if(!session){
     $('identity').textContent='';$('access').textContent='';
     const response=await fetch(`${client.supabaseUrl}/auth/v1/settings`,{headers:{apikey:client.supabaseKey}});
@@ -30,8 +32,8 @@ async function render(session){
   $('access').textContent=data.is_admin
     ?'Cuenta de administración verificada. El panel conectado está en preparación.'
     :data.has_access
-      ?'Membresía vigente. El aula conectada está en preparación; la demo sigue disponible por separado.'
-      :'Tu cuenta está creada. La membresía todavía no está activa y los cobros aún no están habilitados.';
+      ?'Membresía vigente. Preventa: el primer curso se habilita el viernes 6 de noviembre de 2026. La demo está disponible por separado.'
+      :'Tu cuenta está creada. La membresía todavía no está activa. Podés revisar la preventa abajo.';
 }
 async function start(){
   const response=await fetch('../assets/config.json',{cache:'no-store'});

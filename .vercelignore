@@ -20,3 +20,4 @@ superadmin/test.cjs
 supabase/
 scripts/check-database.mjs
 ingresar/check.cjs
+server/*.test.mjs

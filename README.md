@@ -1,6 +1,6 @@
 # LOS CURSOS DE GRIMI
 
-Academia para principiantes que quieren crear apps con AI. Marca Fucsia club; clases grabadas, materiales, consultas y encuentros por curso. Membresía inicial propuesta: USD 20/mes, Perú.
+Academia para principiantes que quieren crear apps con AI. Marca Fucsia club; clases grabadas, materiales, consultas y encuentros por curso. Membresía inicial propuesta: S/50 por mes, Perú.
 
 Repo público: https://github.com/agrimald2/los-cursos-de-grimi
 
@@ -12,7 +12,7 @@ Detalles, DNS y bloqueos externos: [DEPLOYMENT.md](DEPLOYMENT.md).
 
 ## Estado real
 
-Autenticación Google real en `/ingresar/`, con OAuth PKCE y Supabase Free dedicado. Primera sesión real, persistencia tras recarga, comprobación del rol del propietario y cierre de sesión verificados. Base con RLS y acceso según membresía. Los cobros y las integraciones de aula/superadmin todavía no están habilitados: esas dos aplicaciones conservan sus demos locales y no usan la base real. No hay moderación AI, email transaccional, creación de Meet ni reproducción protegida de video activos.
+Autenticación Google real en `/ingresar/`, con OAuth PKCE y Supabase Free dedicado. Primera sesión real, persistencia tras recarga, comprobación del rol del propietario y cierre de sesión verificados. Base con RLS y acceso según membresía. Integración de Suscripciones de Mercado Pago Perú con endpoints de servidor, notificaciones firmadas, conciliación por período y cancelación. Preventa: primer curso anunciado para el 6 de noviembre de 2026. Aula y superadmin conservan demos locales y no usan la base real. No hay moderación AI, email transaccional, creación de Meet ni reproducción protegida de video activos.
 
 ## Iniciar y verificar
 
@@ -39,6 +39,7 @@ python3 -m http.server 8080 --directory dist --bind 127.0.0.1
 - `brand/`: fuente de verdad de marca, assets, tokens y generadores del manual.
 - `ingresar/`: entrada de cuenta real y pruebas de navegador.
 - `supabase/`: migraciones, configuración y pruebas RLS.
+- `server/` y `api/`: integración de pagos, autenticación y notificaciones verificadas.
 - `scripts/`: comprobaciones y empaquetado de archivos desplegables.
 - `PRD-los-cursos-de-grimi.md`: alcance acordado.
 
@@ -50,10 +51,10 @@ Vercel utiliza `npm run build` y publica `dist/`. El build incluye solo archivos
 
 1. Conectar aula y superadmin a tablas reales de cursos, clases, progreso, consultas y membresías.
 2. Integrar entrega protegida de materiales, reuniones y video con permisos de servidor.
-3. Proveedor de pagos, webhooks verificados y conciliación por período.
+3. Verificar primer pago real y cancelación con un comprador; nunca simular una aprobación ni cobrar dinero real desde pruebas automatizadas.
 4. Moderación AI, email, contenido real y calendario de encuentros.
 
-El registro de cuenta ya funciona; no concede acceso pagado. Los cobros siguen deshabilitados y las áreas internas se presentan como demos. No ingresar datos sensibles en esas demos. No se incluyen claves privadas ni secretos en código.
+El registro de cuenta ya funciona; no concede acceso pagado. La preventa requiere condiciones aceptadas y confirmación final en Mercado Pago. Las áreas internas se presentan como demos hasta la entrega anunciada. No ingresar datos sensibles en esas demos. No se incluyen claves privadas ni secretos en código.
 
 ## Activos y licencias
 

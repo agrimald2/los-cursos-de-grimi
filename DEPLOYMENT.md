@@ -1,4 +1,4 @@
-# Publicación — 2 noviembre 2026
+# Publicación — 3 noviembre 2026
 
 ## Verificado
 
@@ -68,3 +68,17 @@ vercel deploy --prod --yes --scope latech2 --global-config /Users/grimmy/.config
 ```
 
 El build publica únicamente dist/. .vercelignore limita los archivos subidos al proveedor; .gitignore excluye secretos y salidas generadas del repositorio.
+
+## Suscripciones y preventa
+
+Mercado Pago Perú: App-Cursos, aplicación 5600220258147296, vendedor 485750753, plan 3e033ce42d4e448f89a63149850c6eb3. API real confirmó plan activo, PEN 50 y frecuencia mensual. Credenciales privadas solo en entorno de servidor de Vercel; no se publica Client Secret ni Access Token.
+
+`POST /api/billing` requiere sesión Supabase verificada y origen canónico. Precio se toma de configuración del servidor. Una reserva por usuario y entorno evita mandatos duplicados; errores ambiguos se concilian antes de reintentar. La autorización del mandato y el regreso de checkout no conceden acceso. Solo un pago aprobado, recuperado por API y validado contra monto, moneda, vendedor, aplicación, entorno y referencia puede registrar un período abonado.
+
+`POST /api/mercadopago-webhook` valida HMAC SHA-256, ID del recurso, solicitud y antigüedad. Notificaciones repetidas o desordenadas se concilian con tablas privadas y un registro de eventos. Cancelación se confirma contra proveedor, preserva período abonado y no revoca pagos posteriores. Reembolsos y contracargos actualizan el acceso correspondiente. No se usa IPN.
+
+Migraciones 20261103000200_billing y 20261103000300_billing_consent incorporan cobros privados, precio PEN 5000 centavos y registro de aceptación `2026-11-03-preventa`. RPC financieras solo para service_role; compradores no pueden marcar pagos ni cambiar precio o rol. Pruebas locales cubren firmas alteradas y vencidas, monto y entorno incorrectos, duplicados, eventos antiguos, cancelación, devolución, gracia y aislamiento de pruebas.
+
+Titular autorizó credenciales reales y preventa: primer curso el viernes 6 de noviembre de 2026, S/50 al reservar y renovación mensual. Aprobó devolución total antes del inicio o si se incumple entrega del primer curso. Condiciones y privacidad explican estado de demo, proveedor y tratamiento de pagos. No se realizó ningún cargo real automatizado; primer pago y cancelación efectivos requieren verificación con comprador real.
+
+`BILLING_ENABLED` controla altas nuevas; no bloquea consulta, cancelación ni conciliación de suscripciones existentes. Para detener altas, poner `false` y publicar nueva versión. La entrega del primer curso continúa siendo trabajo pendiente, separado de integración de cobros.
