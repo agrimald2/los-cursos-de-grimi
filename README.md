@@ -2,6 +2,12 @@
 
 Academia para principiantes que quieren crear apps con AI. Marca Fucsia club; clases grabadas, materiales, consultas y encuentros por curso. Membresía inicial propuesta: USD 20/mes, Perú.
 
+Repo público: https://github.com/agrimald2/los-cursos-de-grimi
+
+Web desplegada: https://los-cursos-de-grimi.vercel.app
+
+Detalles, DNS y bloqueos externos: [DEPLOYMENT.md](DEPLOYMENT.md).
+
 ## Estado real
 
 Implementación de interfaz y demos funcionales locales. Web pública, alumnos y superadmin están conectados como experiencia visual, pero **no comparten todavía una base de datos real**. No hay Google OAuth, pagos, email, moderación AI ni reproducción protegida de video activos. Los datos demo se guardan en navegador con namespaces separados. Un despliegue de Vercel no convierte esos controles en autenticación ni autorización.
