@@ -5,7 +5,8 @@
 - Repositorio público: https://github.com/agrimald2/los-cursos-de-grimi
 - Vercel, cuenta alonsogrimaldo-1640, equipo Latech (latech2): proyecto los-cursos-de-grimi.
 - Proyecto nuevo: prj_4jBfvIUeBEjP32DPwAiprMVa8Xjt. La copia anterior se conserva en latech-peru.
-- Frontend de producción: https://los-cursos-de-grimi-one.vercel.app
+- Dominio público verificado: https://cursos.alonsogrimaldo.com
+- URL alternativa: https://los-cursos-de-grimi-one.vercel.app
 - Landing, alumnos, superadmin, CSS y módulos ES devuelven HTTP 200.
 - Primer despliegue hecho mediante CLI; no hay vínculo Git activo todavía.
 
@@ -13,10 +14,11 @@ El frontend publicado sigue mostrando las demos y sus límites. No se habilitaro
 
 ## Dominio
 
-Dominio agregado al proyecto nuevo: cursos.alonsogrimaldo.com. Pendiente verificación de propiedad por TXT; el dominio raíz permanece en el equipo anterior.
-DNS está en Cloudflare y todavía no contiene registro para cursos.
+Dominio cursos.alonsogrimaldo.com verificado en el proyecto nuevo. El dominio raíz permanece en el equipo anterior. DNS está en Cloudflare, con proxy activo. La API de Vercel informa verified: true y misconfigured: false.
 
-Configuración sugerida por API de Vercel para este proyecto:
+HTTPS devuelve HTTP 200 en landing, alumnos, superadmin y CSS. El alias apunta a dpl_6jgHuDBy9LNJFSXc8gPYh7d1hC8m, proyecto prj_4jBfvIUeBEjP32DPwAiprMVa8Xjt, equipo latech2.
+
+Registros utilizados para asignación y verificación (la recomendación inicial era DNS only; el proxy actual también supera las verificaciones):
 
 ```text
 Tipo: CNAME
@@ -29,7 +31,7 @@ Nombre: _vercel
 Valor: vc-domain-verify=cursos.alonsogrimaldo.com,569ad8ce30f3d753cfe9
 ```
 
-No cambiar nameservers ni registros del dominio raíz. Después de agregar registro, verificar dominio y certificado en Vercel. No se declara subdominio operativo hasta verificar DNS y HTTPS.
+No se modificaron nameservers ni registros del dominio raíz. Propiedad, asignación a la cuenta nueva y HTTPS ya fueron verificados.
 
 ## Supabase
 
