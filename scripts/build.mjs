@@ -1,19 +1,31 @@
 import {cp,mkdir,rm,readFile,writeFile,access} from 'node:fs/promises';
 import path from 'node:path';
 import {build} from 'esbuild';
+import {createHash} from 'node:crypto';
 import {publicConfig} from './public-config.mjs';
 await rm('dist',{recursive:true,force:true});await mkdir('dist',{recursive:true});
 // Explicit allowlist: never deploy source tests, prompts, keys, private notes or local browser artifacts.
 const pages=['index.html','curso.html','membresia.html','privacidad.html','terminos.html'];
-for(const page of pages){await cp(path.join('public-web',page),path.join('dist',page))}
+const fingerprint=content=>createHash('sha256').update(content).digest('hex').slice(0,12);
+const siteScript=await readFile('public-web/assets/site.js');
+const siteName=`site-${fingerprint(siteScript)}.js`;
+for(const page of pages){
+  const html=(await readFile(path.join('public-web',page),'utf8')).replaceAll('src="assets/site.js"',`src="assets/${siteName}"`);
+  await writeFile(path.join('dist',page),html);
+}
 await cp('public-web/assets','dist/assets',{recursive:true});
+await writeFile(path.join('dist/assets',siteName),siteScript);
 await writeFile('dist/assets/config.json',JSON.stringify(publicConfig(process.env)));
 await mkdir('dist/ingresar',{recursive:true});
-await cp('ingresar/index.html','dist/ingresar/index.html');
-await build({entryPoints:['ingresar/app.js'],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,outfile:'dist/ingresar/app.js'});
+const bundle=await build({entryPoints:['ingresar/app.js'],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,write:false,outfile:'app.js'});
+const loginScript=bundle.outputFiles[0].contents;
+const loginName=`app-${fingerprint(loginScript)}.js`;
+await writeFile(path.join('dist/ingresar',loginName),loginScript);
+await writeFile('dist/ingresar/index.html',(await readFile('ingresar/index.html','utf8')).replace('src="app.js"',`src="${loginName}"`));
 await mkdir('dist/public-web',{recursive:true});
-for(const page of pages)await cp(path.join('public-web',page),path.join('dist/public-web',page));
+for(const page of pages)await cp(path.join('dist',page),path.join('dist/public-web',page));
 await cp('public-web/assets','dist/public-web/assets',{recursive:true});
+await writeFile(path.join('dist/public-web/assets',siteName),siteScript);
 for(const [dir,files] of Object.entries({
  alumnos:['index.html','style.css','app.js','model.mjs','store.mjs'],
  superadmin:['index.html','style.css','app.js']
