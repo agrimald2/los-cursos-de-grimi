@@ -59,3 +59,18 @@ El registro de cuenta ya funciona; no concede acceso pagado. La preventa requier
 ## Activos y licencias
 
 Plus Jakarta Sans se distribuye con SIL Open Font License: ver `public-web/assets/OFL.txt`. Mascota y aplicaciones visuales desarrolladas para Grimi a partir de referencia autorizada. No se concede licencia general para reutilizar nombre, imagen, logos o mascota fuera de este proyecto. No se incluye archivo LICENSE de software: consultar al titular antes de reutilizarlo.
+
+## Compartir e instalar
+
+Páginas públicas incluyen Open Graph y tarjetas PNG 1200×630 con la mascota aprobada; academia, primer curso y membresía tienen títulos y descripciones propios. Los metadatos se generan en el HTML durante el build para que no dependan de JavaScript. Las rutas duplicadas bajo `/public-web/` declaran URL canónica pública.
+
+PWA con manifest, iconos PNG normales y maskable, acceso desde pantalla de inicio, instrucciones en `/instalar.html`, presentación pública offline y actualización elegida por el usuario. El service worker solo guarda una lista de archivos públicos. Cuenta, callbacks, respuestas de API, pagos, clases privadas y videos no se almacenan offline. La actualización no recarga automáticamente una operación en curso.
+
+```sh
+npm run assets:brand     # Exportar PNG desde assets originales de marca
+npm run build
+npx playwright install chromium
+npm run check:pwa        # Manifest, metadatos, offline, privacidad y actualización
+```
+
+Los PNG exportados están versionados; el build de producción no necesita volver a generarlos. En equipos con Chrome instalado puede usarse `PLAYWRIGHT_CHANNEL=chrome npm run check:pwa`. GitHub Actions instala Chromium y ejecuta las mismas pruebas sin claves privadas. WhatsApp puede conservar previews de enlaces compartidos previamente; una URL nueva permite solicitar otra lectura de metadatos.

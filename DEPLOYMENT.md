@@ -10,7 +10,7 @@
 - Landing, alumnos, superadmin, CSS y módulos ES devuelven HTTP 200.
 - Repositorio GitHub vinculado a Vercel; instalación limitada a este repositorio. Primera publicación fue por CLI.
 
-La entrada de cuenta ya usa Google y Supabase reales. Aula y superadmin conservan demos locales identificadas. No se habilitaron cobros ni se conectaron todavía sus contenidos al backend.
+La entrada de cuenta ya usa Google y Supabase reales. Aula y superadmin conservan demos locales identificadas. Suscripciones de Mercado Pago se configuró en producción para la preventa aprobada; el contenido de aula y superadmin sigue sin conectarse.
 
 ## Dominio
 
@@ -39,13 +39,13 @@ La cuenta anterior alcanzó límite gratuito; no se modificó. Usuario autorizó
 
 Migración 20261103000100_academy aplicada. Diez tablas públicas con RLS y rol administrativo en esquema privado. Validación con Postgres aislado y consultas anónimas a API real: perfiles, membresías y clases devuelven 401 a visitantes; catálogo solo ofrece metadatos públicos. Revisión de seguridad de Supabase sin alertas.
 
-Google Cloud: proyecto separado los-cursos-de-grimi, cliente Grimi Web · Supabase. Client Secret configurado exclusivamente en proveedor de Supabase; archivo temporal de transferencia eliminado. Vercel recibe solo URL y clave pública anon. El build rechaza claves de servidor. MFA TOTP disponible; no se solicita acceso a Gmail, Drive ni Calendar.
+Google Cloud: proyecto separado los-cursos-de-grimi, cliente Grimi Web · Supabase. Client Secret configurado exclusivamente en proveedor de Supabase; archivo temporal de transferencia eliminado. El navegador recibe solo URL y clave pública anon; las claves de servidor para pagos se almacenan separadamente en funciones de Vercel. El build rechaza claves de servidor. MFA TOTP disponible; no se solicita acceso a Gmail, Drive ni Calendar.
 
 `/ingresar/` usa cliente oficial Supabase con PKCE. Recorrido real Google → callback Supabase → cuenta comprobado con titular, incluyendo sesión tras recarga y cierre. Propietario identificado por UUID de usuario Google verificado y asignado como único administrador desde servidor. Registro normal crea membresía pendiente y nunca concede rol ni acceso pagado.
 
 Avisos de privacidad y condiciones de etapa de prueba aprobados por titular para publicación. Consola Google confirma OAuth “En producción”; ya no está restringido al modo de prueba. Esto no equivale a verificación de marca de Google. No se subió logotipo ni se solicitaron permisos sensibles o restringidos.
 
-QA-Emma y bases anteriores siguen intactos. Aula y superadmin existentes continúan como demos locales; sus datos no se migraron ni sincronizaron automáticamente. Integración de esas pantallas, contenido real y pagos siguen pendientes.
+QA-Emma y bases anteriores siguen intactos. Aula y superadmin existentes continúan como demos locales; sus datos no se migraron ni sincronizaron automáticamente. La integración de esas pantallas y la entrega de contenido real siguen pendientes. Pagos se incorporó en la etapa de preventa descrita abajo.
 
 Detalles de backend y pruebas: [supabase/README.md](supabase/README.md).
 
@@ -82,3 +82,11 @@ Migraciones 20261103000200_billing y 20261103000300_billing_consent incorporan c
 Titular autorizó credenciales reales y preventa: primer curso el viernes 6 de noviembre de 2026, S/50 al reservar y renovación mensual. Aprobó devolución total antes del inicio o si se incumple entrega del primer curso. Condiciones y privacidad explican estado de demo, proveedor y tratamiento de pagos. No se realizó ningún cargo real automatizado; primer pago y cancelación efectivos requieren verificación con comprador real.
 
 `BILLING_ENABLED` controla altas nuevas; no bloquea consulta, cancelación ni conciliación de suscripciones existentes. Para detener altas, poner `false` y publicar nueva versión. La entrega del primer curso continúa siendo trabajo pendiente, separado de integración de cobros.
+
+## Versión 0.3.0: previews sociales y PWA
+
+Open Graph se incorpora al HTML generado, con URLs HTTPS absolutas, títulos, descripciones y PNG 1200×630 distintos para academia, primer curso y membresía. Las páginas públicas permiten lectura de crawlers; cuenta, API, demos y herramientas permanecen excluidas de robots.
+
+Manifest único, iconos 192/512, maskable opaco con zona segura y apple-touch-icon. Instalación bajo demanda e instrucciones para iOS, Android y escritorio en `/instalar.html`. Service worker con lista explícita de recursos públicos, caché por versión, presentación offline y respuesta de reconexión si el dispositivo elimina su caché. No almacena sesiones, callbacks, APIs, respuestas de pagos ni videos. Una versión nueva se aplica cuando el usuario elige actualizar, sin recargar automáticamente formularios.
+
+Pruebas Chromium: dimensiones y metadatos, manifest válido, inicio instalado offline, presentación del curso sin conexión, fallback de cuenta privada, ausencia de API/datos privados en caché, pantallas 320px y horizontal, actualización y limpieza de caché anterior, y recuperación tras borrado del almacenamiento. GitHub Actions ejecuta esas comprobaciones en cada cambio. No se envió ningún mensaje de WhatsApp desde herramientas.

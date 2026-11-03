@@ -21,3 +21,6 @@ supabase/
 scripts/check-database.mjs
 ingresar/check.cjs
 server/*.test.mjs
+
+scripts/pwa-check.cjs
+scripts/create-brand-images.mjs

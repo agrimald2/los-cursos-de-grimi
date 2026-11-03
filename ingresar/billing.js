@@ -37,6 +37,7 @@ function draw(data){
   $('cancel-payment').hidden=!sub||['cancelled','failed'].includes(sub.state);
   $('cancel-confirmation').hidden=true;
   if(!open)feedback('Inscripciones todavía cerradas. Crear tu cuenta no genera cobros.');
+  else feedback('Revisá las condiciones de preventa antes de continuar. El pago se confirma en Mercado Pago.');
   lock(false);
 }
 async function act(action){

@@ -17,4 +17,6 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check:pwa
       - run: npm run check:database

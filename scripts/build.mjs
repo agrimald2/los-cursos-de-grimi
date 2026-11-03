@@ -3,9 +3,10 @@ import path from 'node:path';
 import {build} from 'esbuild';
 import {createHash} from 'node:crypto';
 import {publicConfig} from './public-config.mjs';
+import {buildPwa} from './pwa-build.mjs';
 await rm('dist',{recursive:true,force:true});await mkdir('dist',{recursive:true});
 // Explicit allowlist: never deploy source tests, prompts, keys, private notes or local browser artifacts.
-const pages=['index.html','curso.html','membresia.html','privacidad.html','terminos.html'];
+const pages=['index.html','curso.html','membresia.html','privacidad.html','terminos.html','instalar.html','offline.html'];
 const fingerprint=content=>createHash('sha256').update(content).digest('hex').slice(0,12);
 const siteScript=await readFile('public-web/assets/site.js');
 const siteName=`site-${fingerprint(siteScript)}.js`;
@@ -36,7 +37,7 @@ for(const [dir,files] of Object.entries({
 await mkdir('dist/brand',{recursive:true});
 await cp('brand/tokens','dist/brand/tokens',{recursive:true});
 await cp('brand/assets','dist/brand/assets',{recursive:true,filter:src=>!src.endsWith('.md')&&!src.includes('mascot-concepts')&&!src.endsWith('README.md')});
-await writeFile('dist/robots.txt','User-agent: *\nDisallow: /\n');
+await buildPwa({pages,siteName});
 const mustExist=['dist/index.html','dist/curso.html','dist/membresia.html','dist/alumnos/index.html','dist/superadmin/index.html','dist/assets/grimmy.webp'];
 for(const file of mustExist)await access(file);
 console.log('Build estático listo: dist/. Registro, cobros y demos conservan etiquetas de disponibilidad.');

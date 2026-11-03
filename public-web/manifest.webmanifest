@@ -1,0 +1,23 @@
+{
+  "id": "/",
+  "name": "LOS CURSOS DE GRIMI",
+  "short_name": "Grimmy",
+  "description": "Aprendé a crear tu primera app con AI, paso a paso y con Grimmy al lado.",
+  "lang": "es-PE",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#211332",
+  "theme_color": "#211332",
+  "categories": ["education", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    {"src": "/assets/pwa/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/assets/pwa/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/assets/pwa/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Tu primera app con AI", "short_name": "Primer curso", "url": "/curso.html", "icons": [{"src":"/assets/pwa/icon-192.png","sizes":"192x192"}]},
+    {"name": "Mi cuenta y membresía", "short_name": "Mi cuenta", "url": "/ingresar/", "icons": [{"src":"/assets/pwa/icon-192.png","sizes":"192x192"}]}
+  ]
+}
