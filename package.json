@@ -7,10 +7,17 @@
   "scripts": {
     "check": "node scripts/check.mjs",
     "test": "node scripts/check.mjs",
+    "check:database": "node scripts/check-database.mjs",
     "build": "node scripts/build.mjs",
     "dev": "python3 -m http.server 8080 --bind 127.0.0.1"
   },
   "engines": {
     "node": "22.x"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.118.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }

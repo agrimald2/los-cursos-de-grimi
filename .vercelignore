@@ -17,3 +17,6 @@ alumnos/check.mjs
 alumnos/store-check.mjs
 alumnos/browser-check.js
 superadmin/test.cjs
+supabase/
+scripts/check-database.mjs
+ingresar/check.cjs

@@ -1,10 +1,16 @@
 import {cp,mkdir,rm,readFile,writeFile,access} from 'node:fs/promises';
 import path from 'node:path';
+import {build} from 'esbuild';
+import {publicConfig} from './public-config.mjs';
 await rm('dist',{recursive:true,force:true});await mkdir('dist',{recursive:true});
 // Explicit allowlist: never deploy source tests, prompts, keys, private notes or local browser artifacts.
-const pages=['index.html','curso.html','membresia.html'];
+const pages=['index.html','curso.html','membresia.html','privacidad.html','terminos.html'];
 for(const page of pages){await cp(path.join('public-web',page),path.join('dist',page))}
 await cp('public-web/assets','dist/assets',{recursive:true});
+await writeFile('dist/assets/config.json',JSON.stringify(publicConfig(process.env)));
+await mkdir('dist/ingresar',{recursive:true});
+await cp('ingresar/index.html','dist/ingresar/index.html');
+await build({entryPoints:['ingresar/app.js'],bundle:true,format:'esm',platform:'browser',target:'es2022',minify:true,outfile:'dist/ingresar/app.js'});
 await mkdir('dist/public-web',{recursive:true});
 for(const page of pages)await cp(path.join('public-web',page),path.join('dist/public-web',page));
 await cp('public-web/assets','dist/public-web/assets',{recursive:true});

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Entrar al club · LOS CURSOS DE GRIMI</title>
+  <link rel="icon" href="../public-web/assets/favicon.svg">
+  <link rel="stylesheet" href="../public-web/assets/site.css">
+  <style>
+    .login{min-height:100dvh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:5vw;max-width:1100px;margin:auto;padding:48px 24px}.login-art img{width:min(100%,420px);filter:drop-shadow(0 24px 60px #ff4bc52b)}.login-art h1{font-size:clamp(2.5rem,6vw,4.5rem);line-height:1.04;margin:24px 0}.login-art h1 em{color:#ff4bc5;font-style:normal}.login-panel{background:#2c1b40;border:1px solid #fff2;border-radius:28px;padding:32px;box-shadow:8px 8px 0 #70f6ec}.login-panel h2{font-size:2rem;margin:20px 0}.login-panel p{line-height:1.65}.login-panel .button{width:100%;justify-content:center;margin:12px 0}.login-panel button:disabled{opacity:.55;cursor:wait}.login-panel [hidden]{display:none!important}.login-links{display:flex;gap:24px;flex-wrap:wrap;margin-top:24px;font-size:.875rem}.login-links a{text-decoration:underline}#message{min-height:3.2em}#identity{overflow-wrap:anywhere}.badge{display:inline-block}@media(max-width:720px){.login{grid-template-columns:1fr;gap:24px;padding:28px 24px 44px}.login-art img{display:none}.login-art h1{font-size:2.7rem}.login-panel{padding:24px;box-shadow:5px 5px 0 #70f6ec}}
+  </style>
+</head>
+<body>
+<main class="login">
+  <section class="login-art"><a class="brand" href="../"><strong>grimmy.</strong><small>LOS CURSOS DE GRIMI</small></a><h1>Tu primera app.<br><em>Tu próxima versión.</em></h1><img src="../public-web/assets/grimmy.webp" alt="Grimmy, listo para crear contigo"></section>
+  <section class="login-panel" aria-labelledby="login-title">
+    <span class="badge">EL CLUB DE LOS QUE HACEN</span>
+    <h2 id="login-title">Pasá, estás en casa.</h2>
+    <p id="message" role="status" aria-live="polite">Preparando tu acceso…</p>
+    <div id="signed-out"><button class="button cyan" id="google" disabled>Continuar con Google <span aria-hidden="true">↗</span></button><p>Crear cuenta no activa una membresía ni realiza cobros.</p></div>
+    <div id="signed-in" hidden><p id="identity"></p><p id="access"></p><button class="button" id="logout">Cerrar sesión</button></div>
+    <nav class="login-links" aria-label="Volver a la academia"><a href="../">Volver al inicio</a><a href="../alumnos/">Explorar demo del aula</a><a href="../privacidad.html">Privacidad</a><a href="../terminos.html">Condiciones de prueba</a></nav>
+  </section>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

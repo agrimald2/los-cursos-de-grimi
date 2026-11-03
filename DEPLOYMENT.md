@@ -10,7 +10,7 @@
 - Landing, alumnos, superadmin, CSS y módulos ES devuelven HTTP 200.
 - Primer despliegue hecho mediante CLI; no hay vínculo Git activo todavía.
 
-El frontend publicado sigue mostrando las demos y sus límites. No se habilitaron cobros, cuentas reales, datos compartidos ni acceso protegido de servidor.
+La entrada de cuenta ya usa Google y Supabase reales. Aula y superadmin conservan demos locales identificadas. No se habilitaron cobros ni se conectaron todavía sus contenidos al backend.
 
 ## Dominio
 
@@ -33,17 +33,25 @@ Valor: vc-domain-verify=cursos.alonsogrimaldo.com,569ad8ce30f3d753cfe9
 
 No se modificaron nameservers ni registros del dominio raíz. Propiedad, asignación a la cuenta nueva y HTTPS ya fueron verificados.
 
-## Supabase
+## Supabase y Google
 
-Usuario eligió organización LaTech. Se intentó crear proyecto dedicado en organización nativa LaTech, sin tocar bases existentes. Proveedor rechazó creación por límite de dos proyectos gratuitos activos del propietario; no se creó ningún proyecto ni se generó conexión productiva.
+La cuenta anterior alcanzó límite gratuito; no se modificó. Usuario autorizó cuenta nueva y plan Free. Proyecto dedicado los-cursos-de-grimi, referencia zmcjpttzwgbfczpuxusn, organización Latech rvwptkjyiprqlaskteej, región sa-east-1, nano, ACTIVE_HEALTHY.
 
-QA-Emma sigue en uso y debe conservarse. Pendiente: ampliar plan de Supabase o identificar explícitamente otro proyecto que puede pausarse. La nueva cuenta de Vercel no modifica el límite de Supabase. No se pausó, borró ni reutilizó ningún proyecto existente.
+Migración 20261103000100_academy aplicada. Diez tablas públicas con RLS y rol administrativo en esquema privado. Validación con Postgres aislado y consultas anónimas a API real: perfiles, membresías y clases devuelven 401 a visitantes; catálogo solo ofrece metadatos públicos. Revisión de seguridad de Supabase sin alertas.
 
-Después: crear proyecto dedicado, migraciones y RLS; integrar Google; asignar rol superadmin de servidor; conectar cursos, progreso, consultas y membresías. Las claves privadas y contraseñas nunca van al navegador ni al repositorio.
+Google Cloud: proyecto separado los-cursos-de-grimi, cliente Grimi Web · Supabase. Client Secret configurado exclusivamente en proveedor de Supabase; archivo temporal de transferencia eliminado. Vercel recibe solo URL y clave pública anon. El build rechaza claves de servidor. MFA TOTP disponible; no se solicita acceso a Gmail, Drive ni Calendar.
+
+`/ingresar/` usa cliente oficial Supabase con PKCE. Recorrido real Google → callback Supabase → cuenta comprobado con titular, incluyendo sesión tras recarga y cierre. Propietario identificado por UUID de usuario Google verificado y asignado como único administrador desde servidor. Registro normal crea membresía pendiente y nunca concede rol ni acceso pagado.
+
+Avisos de privacidad y condiciones de etapa de prueba aprobados por titular para publicación. Consola Google confirma OAuth “En producción”; ya no está restringido al modo de prueba. Esto no equivale a verificación de marca de Google. No se subió logotipo ni se solicitaron permisos sensibles o restringidos.
+
+QA-Emma y bases anteriores siguen intactos. Aula y superadmin existentes continúan como demos locales; sus datos no se migraron ni sincronizaron automáticamente. Integración de esas pantallas, contenido real y pagos siguen pendientes.
+
+Detalles de backend y pruebas: [supabase/README.md](supabase/README.md).
 
 ## Automatización Git
 
-La cuenta nueva rechaza `vercel git connect` con: “You need to add a Login Connection to your GitHub account first. (400)”. Conectar GitHub en los ajustes de cuenta de Vercel y volver a vincular el repositorio. Hasta entonces, `git push` por sí solo no publica la app.
+Login Connection ya se agregó. La API rechaza vincular repositorio con: “To link a GitHub repository, you need to install the GitHub integration first.” Instalar app oficial https://github.com/apps/vercel, habilitar agrimald2/los-cursos-de-grimi y volver a conectar. Hasta entonces, `git push` por sí solo no publica la app.
 
 GitHub Actions verifica sintaxis, pruebas de estado y build; no contiene secretos ni despliega por su cuenta.
 

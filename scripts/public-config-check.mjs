@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {publicConfig} from './public-config.mjs';
+const env={PUBLIC_SUPABASE_URL:'https://example.supabase.co'};
+assert.throws(()=>publicConfig({...env,PUBLIC_SUPABASE_PUBLISHABLE_KEY:'sb_secret_forbidden'}));
+const jwt=role=>`e30.${Buffer.from(JSON.stringify({role})).toString('base64url')}.signature`;
+assert.throws(()=>publicConfig({...env,PUBLIC_SUPABASE_PUBLISHABLE_KEY:jwt('service_role')}));
+assert.equal(publicConfig({...env,PUBLIC_SUPABASE_PUBLISHABLE_KEY:jwt('anon')}).supabasePublishableKey,jwt('anon'));
+assert.throws(()=>publicConfig({...env,PUBLIC_SUPABASE_URL:'https://attacker.example',PUBLIC_SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'}));
+assert.deepEqual(publicConfig({}),{supabaseUrl:null,supabasePublishableKey:null});
+console.log('Browser configuration rejects server secrets and unexpected origins.');
