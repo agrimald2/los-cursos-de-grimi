@@ -1,0 +1,14 @@
+{
+  "name": "los-cursos-de-grimi",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Academia de Grimi: web pública, alumnos y superadmin. Fucsia club.",
+  "scripts": {
+    "check": "node scripts/check.mjs",
+    "test": "node scripts/check.mjs",
+    "build": "node scripts/build.mjs",
+    "dev": "python3 -m http.server 8080 --bind 127.0.0.1"
+  },
+  "engines": { "node": ">=22" }
+}

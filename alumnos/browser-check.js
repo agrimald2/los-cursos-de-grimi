@@ -1,0 +1,74 @@
+async (page) => {
+ const context=await page.context().browser().newContext({viewport:{width:1280,height:900}});
+ const a=await context.newPage(),errors=[],checks=[];
+ context.on('page',p=>p.on('pageerror',e=>errors.push(e.message)));a.on('pageerror',e=>errors.push(e.message));
+ const check=(name,ok)=>{if(!ok)throw Error(name);checks.push(name)};
+  try{
+  await a.goto('http://127.0.0.1:8767/alumnos/index.html#aula/idea');
+  await a.getByRole('tab',{name:'Consultas',exact:true}).click();
+  await a.getByLabel('¿Qué te trabó?').fill('Borrador de Idea');
+  await a.getByRole('button',{name:'Diseño',exact:true}).click();
+  await a.getByRole('tab',{name:'Consultas',exact:true}).click();
+  check('Borradores separados por clase',await a.locator('#question-text').inputValue()==='');
+  await a.locator('#question-text').fill('Borrador de Diseño');
+  await a.getByRole('button',{name:'Idea',exact:true}).click();
+  await a.getByRole('tab',{name:'Consultas',exact:true}).click();
+  check('Borrador recuperado al volver',await a.locator('#question-text').inputValue()==='Borrador de Idea');
+  await a.locator('.thread').first().getByLabel('Sumá tu respuesta').fill('Respuesta pendiente');
+  await a.locator('#complete-lesson').click();
+  await a.waitForFunction(()=>document.querySelector('#complete-lesson').getAttribute('aria-pressed')==='true');
+  check('Completar no borra respuesta pendiente',await a.locator('.thread').first().locator('textarea').inputValue()==='Respuesta pendiente');
+  check('CTA de inicio apunta a primera pendiente',(await a.locator('#continue-button').getAttribute('href'))==='#aula/design');
+  await a.locator('.thread').first().locator('textarea').fill('x'.repeat(500));
+  await a.locator('.thread').first().getByRole('button',{name:'Responder · demo',exact:true}).click();
+  await a.waitForFunction(()=>document.querySelectorAll('.thread .reply').length===2);
+  await a.reload();
+  await a.getByRole('tab',{name:'Consultas',exact:true}).click();
+  check('500 caracteres conservados tras recarga',(await a.locator('.thread .reply p').last().textContent()).length===500);
+  check('Borrador de consulta conservado tras recarga',await a.locator('#question-text').inputValue()==='Borrador de Idea');
+  await a.evaluate(()=>{window.originalSetItem=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw new DOMException('Full','QuotaExceededError')}});
+  await a.locator('#question-text').fill('Consulta que no debe perderse');
+  await a.locator('#question-form button').click();
+  await a.locator('#storage-warning').waitFor({state:'visible'});
+  check('Error de guardado conserva entrada',await a.locator('#question-text').inputValue()==='Consulta que no debe perderse');
+  check('Sin falsa confirmación',!(await a.locator('#toast').textContent()).includes('Consulta guardada'));
+  await a.waitForTimeout(800); // Let pending draft autosave also observe storage failure before retry.
+  await a.evaluate(()=>Storage.prototype.setItem=window.originalSetItem);
+  await a.locator('#retry-save').click();
+  await a.locator('#storage-warning').waitFor({state:'hidden'});
+  await a.locator('#question-form button').click();
+  await a.waitForFunction(()=>document.querySelector('#question-text').value==='');
+  check('Reintento permite enviar',await a.locator('#questions').textContent().then(s=>s.includes('Consulta que no debe perderse')));
+  const b=await context.newPage();
+  await b.goto('http://127.0.0.1:8767/alumnos/index.html#aula/design');
+  await a.getByRole('tab',{name:'Mis notas',exact:true}).click();
+  await a.locator('#lesson-notes').fill('Nota persistente de pestaña A');await a.waitForFunction(()=>JSON.parse(localStorage.getItem('grimi-alumnos-demo-v1')).notes.idea==='Nota persistente de pestaña A');
+  await b.locator('#complete-lesson').click();
+  await b.waitForFunction(()=>document.querySelector('#complete-lesson').getAttribute('aria-pressed')==='true');
+  check('Progreso de B no borra nota de A',await a.evaluate(()=>JSON.parse(localStorage.getItem('grimi-alumnos-demo-v1')).notes.idea)==='Nota persistente de pestaña A');
+  check('Sin salto de clase por otra pestaña',(await a.locator('#lesson-title').textContent())==='Tu idea, bien definida');
+  await a.getByRole('link',{name:'Mi cuenta',exact:true}).click();
+  await a.getByRole('heading',{name:'Vos decidís cómo seguir.',exact:true}).waitFor({state:'visible'});
+  await a.waitForFunction(()=>document.activeElement.tagName==='H1');
+  check('Foco al cambiar pantalla',await a.evaluate(()=>document.activeElement.textContent==='Vos decidís cómo seguir.'));
+  check('Fecha de renovación visible',(await a.locator('#membership-date').textContent()).includes('2 de diciembre de 2026'));
+  await a.locator('#demo-status').selectOption('grace');
+  await a.waitForFunction(()=>document.querySelector('#membership-date').textContent.includes('5 de noviembre'));
+  check('Fecha de gracia visible',(await a.locator('#membership-date').textContent()).includes('5 de noviembre'));
+  await a.locator('#demo-status').selectOption('active');
+  await a.waitForFunction(()=>document.querySelector('#account-status').textContent.includes('activa'));
+  await a.getByRole('link',{name:'Mi aula',exact:true}).click();
+  await a.setViewportSize({width:390,height:844});
+  await a.waitForFunction(()=>!document.querySelector('#lesson-outline').open);
+  check('Índice móvil plegado',await a.locator('#outline-summary').isVisible());
+  check('Contenido legible en móvil',await a.evaluate(()=>parseFloat(getComputedStyle(document.querySelector('.lesson-guide p')).fontSize)>=15));
+  check('Navegación móvil legible',await a.evaluate(()=>parseFloat(getComputedStyle(document.querySelector('.nav a')).fontSize)>=12));
+  for(const width of [390,320]){await a.setViewportSize({width,height:844});check('Sin desborde a '+width+' px',await a.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))}
+  await a.setViewportSize({width:1280,height:900});
+  await a.getByRole('link',{name:'Mi inicio',exact:true}).click();await a.getByRole('link',{name:'Mi aula',exact:true}).click();await a.getByRole('tab',{name:'Clase',exact:true}).click();await a.locator('#lesson-title').focus();await a.locator('#lesson-title').scrollIntoViewIfNeeded();
+  check('Título fuera del header',await a.evaluate(()=>document.querySelector('#lesson-title').getBoundingClientRect().top>=document.querySelector('.top').getBoundingClientRect().bottom-1));
+  await a.screenshot({path:'/Users/grimmy/Documents/ChatGPT/Tiktok Live/alumnos/review-after.png'});
+  check('Sin errores JavaScript',errors.length===0);
+  return {checks,passed:checks.length};
+ }catch(error){throw new Error(error.message+' | Verificaciones previas: '+checks.join(', ')+' | Errores de página: '+errors.join(', '))}finally{await context.close()}
+}

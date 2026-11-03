@@ -1,0 +1,23 @@
+import assert from 'node:assert/strict';
+import {defaultState,normalizeState,resumeLesson,nextLesson,membershipDates} from './model.mjs';
+import {createStore,mergeState,KEY,ConflictError} from './store.mjs';
+const copy=structuredClone;
+let serial=Promise.resolve();const locks={request(_key,fn){const job=serial.then(fn);serial=job.catch(()=>{});return job}};
+const data=new Map(),storage={getItem:k=>data.get(k)||null,setItem:(k,v)=>data.set(k,v)};
+const a=createStore(storage,locks),b=createStore(storage,locks);const sa=a.load(),sb=b.load();
+sa.notes.idea='Nota de A';sb.completed=['idea'];sb.current='design';
+await Promise.all([a.save(sa),b.save(sb)]);
+let saved=normalizeState(JSON.parse(data.get(KEY)));assert.equal(saved.notes.idea,'Nota de A');assert.deepEqual(saved.completed,['idea']);
+const c=createStore(storage,locks),d=createStore(storage,locks),sc=c.load(),sd=d.load();sc.notes.idea='Cambio C';sd.notes.idea='Cambio D';await c.save(sc);await assert.rejects(()=>d.save(sd),ConflictError);assert.equal(JSON.parse(data.get(KEY)).notes.idea,'Cambio C');
+const base=defaultState(),left=copy(base),right=copy(base);left.questionDrafts.idea='Pregunta de Idea';right.questionDrafts.design='Pregunta de Diseño';left.replyDrafts.threadA='Borrador A';right.replyDrafts.threadB='Borrador B';
+const merged=mergeState(base,left,right);assert.equal(merged.questionDrafts.idea,left.questionDrafts.idea);assert.equal(merged.questionDrafts.design,right.questionDrafts.design);assert.equal(merged.replyDrafts.threadA,'Borrador A');assert.equal(merged.replyDrafts.threadB,'Borrador B');
+const text='x'.repeat(500),reply={id:'r1',author:'Vos · ejemplo local',text};const s=defaultState();s.questions=[{id:'q1',lesson:'idea',text:'Pregunta',replies:[reply]}];assert.equal(normalizeState(s).questions[0].replies[0].text,text);
+const legacy=copy(s);legacy.questions[0].replies=['Vos · ejemplo local: '+text];assert.equal(normalizeState(legacy).questions[0].replies[0].text,text);
+const fail=createStore({getItem:()=>null,setItem:()=>{throw new Error('QuotaExceededError')}},locks);fail.load();await assert.rejects(()=>fail.save(s),/QuotaExceeded/);
+const noLock=createStore(storage,null);noLock.load();await assert.rejects(()=>noLock.save(s),/coordinado/);
+const learner=defaultState();learner.completed=['idea'];assert.equal(resumeLesson(learner).id,'design');learner.current='security';assert.equal(resumeLesson(learner).id,'security');assert.equal(nextLesson(learner).id,'publish');
+for(const status of ['active','cancelled','grace','expired','suspended'])assert.match(membershipDates({...learner,status}).date,/2026/);
+// Concurrent replies to one existing question are appended, not overwritten.
+const qbase=copy(s),ql=copy(s),qr=copy(s);ql.questions[0].replies.push({id:'r2',author:'Vos · ejemplo local',text:'A'});qr.questions[0].replies.push({id:'r3',author:'Vos · ejemplo local',text:'B'});assert.equal(mergeState(qbase,ql,qr).questions[0].replies.length,3);
+const syncStore=createStore(storage,locks);let synced=syncStore.load();synced=syncStore.sync(synced);synced.notes.idea='Nota tras sincronizar';await syncStore.save(synced);assert.equal(JSON.parse(data.get(KEY)).notes.idea,'Nota tras sincronizar');
+console.log('Guardado: concurrencia, conflictos, fallos, borradores, límites y destinos verificados.');
