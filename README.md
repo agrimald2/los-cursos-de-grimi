@@ -44,7 +44,7 @@ python3 -m http.server 8080 --directory dist --bind 127.0.0.1
 
 ## Publicación
 
-Vercel utiliza `npm run build` y publica `dist/`. El build incluye solo archivos necesarios; no despliega pruebas, capturas de navegador ni documentos locales. Conectar este repositorio a Vercel habilita despliegues por cambios de GitHub. Proyecto `los-cursos-de-grimi`, equipo `latech2`, dominio `cursos.alonsogrimaldo.com`. Instalación de app GitHub de Vercel aún pendiente; los despliegues actuales se realizan por CLI.
+Vercel utiliza `npm run build` y publica `dist/`. El build incluye solo archivos necesarios; no despliega pruebas, capturas de navegador ni documentos locales. Conectar este repositorio a Vercel habilita despliegues por cambios de GitHub. Proyecto `los-cursos-de-grimi`, equipo `latech2`, dominio `cursos.alonsogrimaldo.com`. App oficial de Vercel instalada para este repo y conexión Git activa. Los push a main activan publicación nativa; GitHub Actions valida código, build y RLS antes de dar la revisión por aprobada.
 
 ## Integración productiva pendiente
 

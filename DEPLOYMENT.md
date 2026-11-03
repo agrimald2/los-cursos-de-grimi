@@ -8,7 +8,7 @@
 - Dominio público verificado: https://cursos.alonsogrimaldo.com
 - URL alternativa: https://los-cursos-de-grimi-one.vercel.app
 - Landing, alumnos, superadmin, CSS y módulos ES devuelven HTTP 200.
-- Primer despliegue hecho mediante CLI; no hay vínculo Git activo todavía.
+- Repositorio GitHub vinculado a Vercel; instalación limitada a este repositorio. Primera publicación fue por CLI.
 
 La entrada de cuenta ya usa Google y Supabase reales. Aula y superadmin conservan demos locales identificadas. No se habilitaron cobros ni se conectaron todavía sus contenidos al backend.
 
@@ -51,9 +51,11 @@ Detalles de backend y pruebas: [supabase/README.md](supabase/README.md).
 
 ## Automatización Git
 
-Login Connection ya se agregó. La API rechaza vincular repositorio con: “To link a GitHub repository, you need to install the GitHub integration first.” Instalar app oficial https://github.com/apps/vercel, habilitar agrimald2/los-cursos-de-grimi y volver a conectar. Hasta entonces, `git push` por sí solo no publica la app.
+App oficial de Vercel instalada únicamente para agrimald2/los-cursos-de-grimi con aprobación del titular. `vercel git connect` devuelve Connected en equipo latech2. Cada push a main debe activar despliegue de producción; verificar estado final del commit antes de declararlo publicado.
 
-GitHub Actions verifica sintaxis, pruebas de estado y build; no contiene secretos ni despliega por su cuenta.
+GitHub Actions valida sintaxis, estado local, configuración pública, build y políticas de base con Postgres aislado. Validación del commit 03626cc aprobada. La prueba de DB usa TCP para esperar servidor definitivo, evitando confundir instancia temporal de inicialización con servidor listo.
+
+GitHub Actions no contiene secretos ni ejecuta despliegue por su cuenta; la publicación la realiza integración nativa GitHub→Vercel.
 
 ## Desplegar manualmente
 
