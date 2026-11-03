@@ -4,7 +4,7 @@ Academia para principiantes que quieren crear apps con AI. Marca Fucsia club; cl
 
 Repo público: https://github.com/agrimald2/los-cursos-de-grimi
 
-Web desplegada: https://los-cursos-de-grimi.vercel.app
+Web desplegada: https://los-cursos-de-grimi-one.vercel.app
 
 Detalles, DNS y bloqueos externos: [DEPLOYMENT.md](DEPLOYMENT.md).
 
